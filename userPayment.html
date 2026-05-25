@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Collection - EventOpportunity</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="userPay.css">
+</head>
+
+<body>
+    <!-- Navigation Bar -->
+    <section class="header">
+        <nav>
+            <a href="homePage.html"><img src="images/eventLogo.png" alt="Event Logo"></a>
+            <div class="nav-links" id="navLinks">
+                <i class="fa fa-times" onclick="hideMenu()"></i>
+                <ul>
+                    <li><a href="homePage.html">HOME</a></li>
+                    <li><a href="event.html">EVENTS</a></li>
+                    <li class="active"><a href="userPayment.html" style="color: #F44336;">PAYMENTS</a></li>
+                    <li><a href="profile.html">PROFILE</a></li>
+                </ul>
+                <!-- Welcome Badge - YEH ADD KARNA THA -->
+                <div class="professional-badge" id="professional-badge" style="display: none;">
+                    Welcome back, <span class="username" id="username-display">User</span>!
+                </div>
+            </div>
+            <i class="fa fa-bars" onclick="showMenu()"></i>
+        </nav>
+    </section>
+
+    <!-- Loading Screen -->
+    <div id="loading-screen" class="loading-screen">
+        <div class="loading-spinner">
+            <i class="fa fa-spinner fa-spin"></i>
+            <p>Loading Payments...</p>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content" id="main-content" style="display: none;">
+        <div class="page-header">
+            <h1 class="page-title">Payment Collection</h1>
+        </div>
+
+        <!-- Statistics Cards -->
+        <div class="stats-container">
+            <div class="stat-card">
+                <div class="stat-label">Payment Received (₹)</div>
+                <div class="stat-value" id="paymentReceived">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Pending Payments (₹)</div>
+                <div class="stat-value" id="pendingPayments">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Total Earnings (₹)</div>
+                <div class="stat-value" id="totalEarnings">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Total Events Attended</div>
+                <div class="stat-value" id="totalEvents">0</div>
+            </div>
+        </div>
+
+        <!-- Search Section -->
+        <div class="search-section">
+            <h2 class="section-title">Search Payment History</h2>
+            <div class="search-container">
+                <input type="text" id="eventIdSearch" placeholder="Search by Event ID" class="search-input">
+                <input type="text" id="transactionIdSearch" placeholder="Search by Transaction ID" class="search-input">
+                <button id="searchBtn" class="search-btn">
+                    <i class="fa fa-search"></i> Search
+                </button>
+                <button id="clearSearchBtn" class="clear-btn">
+                    <i class="fa fa-times"></i> Clear
+                </button>
+            </div>
+        </div>
+
+        <!-- Payment History Section -->
+        <div class="section-header">
+            <h2 class="section-title">Payment History</h2>
+            <span id="paymentCount" class="payment-count">0 payments</span>
+        </div>
+
+        <!-- No Payments Message -->
+        <div id="noPaymentsMessage" class="no-payments" style="display: none;">
+            <i class="fa fa-info-circle"></i>
+            <p>No payment history found</p>
+        </div>
+
+        <!-- Payments List -->
+        <div id="paymentsList" class="payments-list"></div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="welcomeBadge.js"></script>
+    <script src="userPay.js"></script>
+</body>
+
+</html>

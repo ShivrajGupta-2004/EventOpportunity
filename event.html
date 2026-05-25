@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EventOpportunity - Listings</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="event.css">
+</head>
+<body>
+
+<section class="header">
+        <nav>
+            <a href="practice page.html"><img src="images/eventLogo.png" alt="Event Logo"></a>
+            <div class="nav-links" id="navLinks">
+                <i class="fa fa-times" onclick="hideMenu()"></i>
+                <ul>
+                    <li><a href="homePage.html">HOME</a></li>
+                    <li class="active"><a href="event.html" style="color: #F44336;">EVENTS</a></li>
+                    <li><a href="userPayment.html">PAYMENTS</a></li>
+                    <li><a href="profile.html">PROFILE</a></li>
+                </ul>
+                 <div class="professional-badge" id="professional-badge" style="display: none;">
+        Welcome back, <span class="username" id="username-display">User</span>!
+    </div>
+            </div>
+            <i class="fa fa-bars" onclick="showMenu()"></i>
+        </nav>
+    </section>  
+
+<!-- Main container -->
+<div class="container">
+  
+  <!-- Filters Sidebar -->
+  <aside class="filters">
+    <h3>Search & Filters</h3>
+
+    <!-- Search Bar -->
+    <label>Search Event</label>
+    <div class="search-container">
+      <input type="text" id="searchInput" placeholder="Search by Name or Location">
+      <i class="fa fa-search search-icon"></i>
+    </div>
+
+    <!-- Event Type -->
+    <label>Types of Events</label>
+    <select id="eventType">
+      <option value="">-- Select Event Type --</option>
+      <option value="corporate">Corporate Event</option>
+      <option value="real-estate">Real Estate Event</option>
+      <option value="social">Social Event</option>
+      <option value="sport">Sport Event</option>
+      <option value="educational">Educational Event</option>
+      <option value="entertainment">Entertainment Event</option>
+      <option value="community">Community Event</option>
+    </select>ls
+    
+
+    <!-- Location -->
+    <label>Location</label>
+    <input type="text" id="location" placeholder="e.g. Mumbai">
+
+    <!-- Event Filters -->
+    <label><input type="checkbox" id="cityEvent"> Events in my city</label>
+    <label><input type="checkbox" id="weekendEvent"> Weekend events</label>
+    <label><input type="checkbox" id="weeklyEvent"> Weekly events</label>
+
+    <!-- Payment -->
+    <label>Desired Event Payment (₹)</label>
+    <input type="range" id="paymentSlider" min="0" max="3000" step="50" value="0">
+    <span id="paymentValue">₹0</span>
+
+    <!-- Button Container -->
+    <div class="filter-buttons">
+      <button id="applyFilters" class="filter-btn primary-btn">Apply Filters</button>
+      <button id="clearFilters" class="filter-btn secondary-btn">Clear All</button>
+    </div>
+  </aside>
+
+  <!-- Events Listing -->
+  <section class="listings">
+    <div class="events-header">
+      <div class="header-left">
+        <h2>Available Events</h2>
+        <p id="eventsCount">Loading events...</p>
+      </div>
+      <div class="header-right">
+        <div class="event-id-search">
+          <input type="text" id="eventIdSearch" placeholder="Search by Event ID">
+          <button type="button" id="eventIdSearchBtn" class="event-id-search-btn">
+            <i class="fa fa-search"></i>
+            Search
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Loading Indicator -->
+    <div id="loadingIndicator" class="loading">
+      <p>Loading events...</p>
+    </div>
+
+    <!-- No Events Message -->
+    <div id="noEventsMessage" class="no-events" style="display: none;">
+      <p>No events found matching your criteria.</p>
+    </div>
+
+    <!-- Dynamic Events Container -->
+    <div class="events-container">
+      <!-- Events will be inserted dynamically by JS -->
+    </div>
+  </section>
+
+</div>
+
+<!-- Event Details Modal -->
+<div id="eventModal" class="modal">
+  <div class="modal-content">
+    <span class="close-btn">&times;</span>
+    <h2 id="modalEventName"></h2>
+    
+    <div class="modal-details">
+      <div class="detail-item">
+        <strong>Event ID:</strong> <span id="modalEventId"></span>
+      </div>
+      <div class="detail-item">
+        <strong>Date:</strong> <span id="modalDate"></span>
+      </div>
+      <div class="detail-item">
+        <strong>Location:</strong> <span id="modalLocation"></span>
+      </div>
+      <div class="detail-item">
+        <strong>Event Type:</strong> <span id="modalType"></span>
+      </div>
+      <div class="detail-item">
+        <strong>Payment:</strong> <span id="modalPayment"></span>
+      </div>
+      <div class="detail-item">
+        <strong>Dress Code:</strong> <span id="modalDress"></span>
+      </div>
+      <div class="detail-item">
+        <strong>Participants:</strong> <span id="modalParticipants"></span>
+      </div>
+      <div class="detail-item">
+        <strong>Timing:</strong> <span id="modalTiming"></span>
+      </div>
+      <div class="detail-item">
+        <strong>Description:</strong> <span id="modalDescription"></span>
+      </div>
+    </div>
+    
+    <button id="applyBtn" class="filter-btn primary-btn">Apply</button>
+  </div>
+</div>
+<script src="/js/auth.js"></script>
+<script>
+  Auth.checkAuth(); // runs before event.js
+</script>
+
+</body>
+</html>
+<script src="welcomeBadge.js"></script>
+<script src="/js/event.js"></script>
+<script src="event.js"></script>
+</body>
+</html>

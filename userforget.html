@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Forgot Password - EventOpportunity</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <script src="https://kit.fontawesome.com/d71c1e8eee.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+
+  <style>
+    body {
+      margin: 0;
+      background-color: #f4efef;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    .outer-container {
+      max-width: 800px;
+      margin: 60px auto;
+      background-color: #fff;
+      border-radius: 16px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+      padding: 40px 20px;
+    }
+
+    .header {
+      display: flex;
+      align-items: center;
+      padding: 16px 20px;
+      border-bottom: 1px solid #eee;
+    }
+
+    .event-logo {
+      max-height: 50px;
+      height: auto;
+      width: auto;
+    }
+
+    .inner-container {
+      max-width: 400px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .inner-container h2 {
+      margin-bottom: 6px;
+      color: #333;
+      font-weight: 600;
+    }
+
+    .subtitle {
+      font-size: 14px;
+      color: #777;
+      margin-bottom: 25px;
+    }
+
+    .input-group {
+      margin-bottom: 20px;
+      text-align: left;
+      position: relative;
+    }
+
+    .input-group label {
+      display: block;
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 6px;
+      color: #222;
+    }
+
+    .input-group input {
+      width: 100%;
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+      transition: border-color 0.3s;
+      box-sizing: border-box;
+    }
+
+    .input-group input:focus {
+      border-color: #f44336;
+      outline: none;
+    }
+
+    .input-group input:disabled {
+      background-color: #f5f5f5;
+      color: #999;
+      cursor: not-allowed;
+    }
+
+    .input-group input.error {
+      border-color: #f44336;
+      background-color: #fef2f2;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .disabled {
+      opacity: 0.5;
+      pointer-events: none;
+    }
+
+    .toggle-password {
+      position: absolute;
+      right: 12px;
+      top: 42px;
+      cursor: pointer;
+      color: #888;
+    }
+
+    .submit-btn {
+      background-color: #f44336;
+      color: #fff;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background 0.3s;
+      display: block;
+      margin: 20px auto 0;
+      width: 100%;
+      max-width: 200px;
+    }
+
+    .submit-btn:hover:not(:disabled) {
+      background-color: #d32f2f;
+    }
+
+    .submit-btn:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
+    }
+
+    .resend-btn {
+      background: none;
+      border: none;
+      color: #f44336;
+      cursor: pointer;
+      text-decoration: underline;
+      font-size: 13px;
+      margin-top: 10px;
+      display: none;
+    }
+
+    .resend-btn:disabled {
+      color: #ccc;
+      cursor: not-allowed;
+      text-decoration: none;
+    }
+
+    .message {
+      margin: 15px 0;
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 14px;
+      text-align: center;
+    }
+
+    .message.success {
+      background-color: #f0f9ff;
+      color: #0369a1;
+      border: 1px solid #bae6fd;
+    }
+
+    .message.error {
+      background-color: #fef2f2;
+      color: #dc2626;
+      border: 1px solid #fecaca;
+    }
+
+    .message.info {
+      background-color: #f0f9ff;
+      color: #0369a1;
+      border: 1px solid #bae6fd;
+    }
+
+    .note {
+      margin-top: 16px;
+      font-size: 13px;
+      color: #666;
+    }
+
+    .note a {
+      color: #f44336;
+      text-decoration: none;
+    }
+
+    .note a:hover {
+      text-decoration: underline;
+    }
+
+    .timer {
+      font-size: 12px;
+      color: #666;
+      margin-top: 8px;
+    }
+
+    @media (max-width: 600px) {
+      .outer-container {
+        margin: 30px 10px;
+        padding: 30px 15px;
+      }
+
+      .inner-container {
+        max-width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="outer-container">
+    <div class="header">
+      <img src="images/eventLogo.png" alt="Event Logo" class="event-logo">
+    </div>
+    <div class="inner-container">
+      <h2>Reset Password</h2>
+      <p class="subtitle">Reset your EventOpportunity account password</p>
+
+      <div id="messageContainer"></div>
+
+      <form id="forgotPasswordForm">
+        <!-- Username/Email Field -->
+        <div class="input-group">
+          <label for="userIdentifier">Username or Email</label>
+          <input type="text" id="userIdentifier" name="userIdentifier" 
+                 placeholder="Enter your username or email" required />
+        </div>
+
+        <!-- OTP Field - Initially Hidden -->
+        <div class="input-group hidden" id="otpGroup">
+          <label for="otp">Enter OTP</label>
+          <input type="text" id="otp" name="otp" 
+                 placeholder="6-digit OTP" maxlength="6" disabled />
+          <div class="timer" id="otpTimer"></div>
+          <button type="button" class="resend-btn" id="resendBtn">Resend OTP</button>
+        </div>
+
+        <!-- New Password Field - Initially Disabled -->
+        <div class="input-group">
+          <label for="newPassword">New Password</label>
+          <input type="password" id="newPassword" name="newPassword" 
+                 placeholder="Enter new password" disabled />
+          <i class="fa-solid fa-eye toggle-password" onclick="togglePassword('newPassword', this)"></i>
+        </div>
+
+        <!-- Confirm Password Field - Initially Disabled -->
+        <div class="input-group">
+          <label for="confirmPassword">Confirm Password</label>
+          <input type="password" id="confirmPassword" name="confirmPassword" 
+                 placeholder="Confirm new password" disabled />
+          <i class="fa-solid fa-eye toggle-password" onclick="togglePassword('confirmPassword', this)"></i>
+        </div>
+
+        <button type="submit" class="submit-btn" id="submitBtn">Send OTP</button>
+      </form>
+
+      <div class="note">
+        Remember your password? <a href="userLogin.html">Login here</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /* ---------- CONFIG ---------- */
+    // Initialize EmailJS when page loads
+    function initializeEmailJS() {
+      if (typeof emailjs !== 'undefined') {
+        emailjs.init('3WJrV-Zy0Km0PDmxW'); // Your public key
+        console.log('EmailJS initialized successfully');
+      } else {
+        console.error('EmailJS not loaded. Please check your internet connection.');
+        showMessage('Email service not available. Please refresh the page.', 'error');
+      }
+    }
+
+    // Initialize EmailJS when page loads
+    window.addEventListener('load', initializeEmailJS);
+
+    /* ---------- STATE ---------- */
+    let currentStep = 'send'; // send → verify → reset
+    let userEmail = '';
+    let resendTimer = null;
+    let resendCountdown = 0;
+    const OTP_VALIDITY = 5; // 5 minutes
+
+    /* ---------- DOM ELEMENTS ---------- */
+    const form = document.getElementById('forgotPasswordForm');
+    const messageContainer = document.getElementById('messageContainer');
+    const userIdentifierInput = document.getElementById('userIdentifier');
+    const otpGroup = document.getElementById('otpGroup');
+    const otpInput = document.getElementById('otp');
+    const newPasswordInput = document.getElementById('newPassword');
+    const confirmPasswordInput = document.getElementById('confirmPassword');
+    const submitBtn = document.getElementById('submitBtn');
+    const resendBtn = document.getElementById('resendBtn');
+    const otpTimer = document.getElementById('otpTimer');
+
+    /* ---------- HELPER FUNCTIONS ---------- */
+    // Show message function
+    function showMessage(text, type = 'error') {
+      messageContainer.innerHTML = `<div class="message ${type}">${text}</div>`;
+      messageContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    // Clear message function
+    function clearMessage() {
+      messageContainer.innerHTML = '';
+    }
+
+    // Set loading state for submit button
+    function setLoading(loading, text = 'Processing...') {
+      if (loading) {
+        submitBtn.dataset.originalText = submitBtn.textContent;
+        submitBtn.disabled = true;
+        submitBtn.style.opacity = '0.6';
+        submitBtn.textContent = text;
+      } else {
+        submitBtn.disabled = false;
+        submitBtn.style.opacity = '1';
+        if (submitBtn.dataset.originalText) {
+          submitBtn.textContent = submitBtn.dataset.originalText;
+        }
+      }
+    }
+
+    // Toggle password visibility
+    function togglePassword(inputId, icon) {
+      const input = document.getElementById(inputId);
+      const type = input.type === 'password' ? 'text' : 'password';
+      input.type = type;
+      icon.classList.toggle('fa-eye');
+      icon.classList.toggle('fa-eye-slash');
+    }
+
+    // Start countdown timer
+    function startCountdown() {
+      resendCountdown = 60; // 60 seconds
+      resendBtn.disabled = true;
+      resendBtn.style.display = 'inline-block';
+      
+      const countdown = setInterval(() => {
+        if (resendCountdown <= 0) {
+          clearInterval(countdown);
+          resendBtn.disabled = false;
+          resendBtn.textContent = 'Resend OTP';
+          otpTimer.textContent = '';
+        } else {
+          resendBtn.textContent = `Resend OTP (${resendCountdown}s)`;
+          otpTimer.textContent = `OTP expires in ${Math.ceil(resendCountdown * OTP_VALIDITY / 60)} minutes`;
+          resendCountdown--;
+        }
+      }, 1000);
+    }
+
+    /* ---------- API FUNCTIONS ---------- */
+    // Step 1: Send OTP
+    async function sendOTP() {
+      const userIdentifier = userIdentifierInput.value.trim();
+      
+      if (!userIdentifier) {
+        showMessage('Please enter your username or email');
+        return false;
+      }
+
+      setLoading(true, 'Sending OTP...');
+
+      try {
+        // First get user info from backend
+        const response = await fetch('http://localhost:5000/api/forgot-password', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ userIdentifier })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          userEmail = data.fullEmail; // Full email for sending
+          const userName = data.name;
+          const otp = data.otp;
+
+          // Send email via EmailJS
+          const emailResponse = await emailjs.send('service_mvmlxcr', 'template_qx9w5l9', {
+            to_email: userEmail,
+            name: userName,
+            otp: otp,
+            time: new Date().toLocaleString()
+          });
+
+          console.log('Email sent successfully:', emailResponse);
+          
+          // Mask email for display
+          const maskedEmail = userEmail.replace(/(.{2})(.*)(@.*)/, '$1***$3');
+          showMessage(`OTP sent to ${maskedEmail}`, 'success');
+          
+          // Update UI for step 2
+          userIdentifierInput.disabled = true;
+          otpGroup.classList.remove('hidden');
+          otpInput.disabled = false;
+          otpInput.focus();
+          submitBtn.textContent = 'Verify OTP';
+          submitBtn.disabled = false; // Enable button
+          currentStep = 'verify';
+          startCountdown();
+          
+          return true;
+        } else {
+          showMessage(data.message || 'Failed to send OTP');
+          return false;
+        }
+      } catch (error) {
+        console.error('Send OTP error:', error);
+        if (error.message && error.message.includes('EmailJS')) {
+          showMessage('Failed to send email. Please try again.');
+        } else {
+          showMessage('Connection failed. Please check if server is running.');
+        }
+        return false;
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    // Step 2: Verify OTP
+    async function verifyOTP() {
+      const otp = otpInput.value.trim();
+
+      if (otp.length !== 6) {
+        showMessage('Please enter 6-digit OTP');
+        return false;
+      }
+
+      setLoading(true, 'Verifying OTP...');
+
+      try {
+        const response = await fetch('http://localhost:5000/api/verify-otp', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ email: userEmail, otp })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          showMessage('OTP verified successfully!', 'success');
+          
+          // Update UI for step 3
+          otpInput.disabled = true;
+          newPasswordInput.disabled = false;
+          confirmPasswordInput.disabled = false;
+          newPasswordInput.focus();
+          submitBtn.textContent = 'Reset Password';
+          currentStep = 'reset';
+          resendBtn.style.display = 'none';
+          otpTimer.textContent = '';
+          
+          return true;
+        } else {
+          showMessage(data.message || 'Invalid OTP');
+          otpInput.focus();
+          return false;
+        }
+      } catch (error) {
+        console.error('Verify OTP error:', error);
+        showMessage('Connection failed. Please try again.');
+        return false;
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    // Step 3: Reset Password
+    async function resetPassword() {
+      const newPassword = newPasswordInput.value;
+      const confirmPassword = confirmPasswordInput.value;
+
+      if (newPassword.length < 8) {
+        showMessage('Password must be at least 8 characters long');
+        return false;
+      }
+
+      if (newPassword !== confirmPassword) {
+        showMessage('Passwords do not match');
+        return false;
+      }
+
+      setLoading(true, 'Resetting Password...');
+
+      try {
+        const response = await fetch('http://localhost:5000/api/reset-password', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ email: userEmail, newPassword })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          showMessage('Password reset successfully! Redirecting to login...', 'success');
+          setTimeout(() => {
+            window.location.href = 'userLogin.html';
+          }, 2000);
+          return true;
+        } else {
+          showMessage(data.message || 'Failed to reset password');
+          return false;
+        }
+      } catch (error) {
+        console.error('Reset password error:', error);
+        showMessage('Connection failed. Please try again.');
+        return false;
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    /* ---------- EVENT LISTENERS ---------- */
+    // Form submission handler
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      clearMessage();
+
+      switch (currentStep) {
+        case 'send':
+          await sendOTP();
+          break;
+        case 'verify':
+          await verifyOTP();
+          break;
+        case 'reset':
+          await resetPassword();
+          break;
+      }
+    });
+
+    // Resend OTP handler
+    resendBtn.addEventListener('click', async () => {
+      clearMessage();
+      setLoading(true, 'Resending OTP...');
+      
+      try {
+        const response = await fetch('http://localhost:5000/api/forgot-password', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ userIdentifier: userEmail })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          showMessage('OTP resent successfully!', 'success');
+          otpInput.value = '';
+          otpInput.focus();
+          startCountdown();
+        } else {
+          showMessage(data.message || 'Failed to resend OTP');
+        }
+      } catch (error) {
+        console.error('Resend OTP error:', error);
+        showMessage('Connection failed. Please try again.');
+      } finally {
+        setLoading(false);
+      }
+    });
+
+    // OTP input validation - Only numbers
+    otpInput.addEventListener('input', (e) => {
+      e.target.value = e.target.value.replace(/\D/g, ''); // Only numbers
+      if (e.target.value.length > 6) {
+        e.target.value = e.target.value.slice(0, 6);
+      }
+    });
+
+    // Auto-submit when OTP is 6 digits - REMOVED
+    // otpInput.addEventListener('input', (e) => {
+    //   if (e.target.value.length === 6 && currentStep === 'verify') {
+    //     setTimeout(() => form.dispatchEvent(new Event('submit')), 500);
+    //   }
+    // });
+
+    // Focus on username field when page loads
+    window.addEventListener('load', () => {
+      userIdentifierInput.focus();
+    });
+
+    // Clear error styling when user starts typing
+    [userIdentifierInput, otpInput, newPasswordInput, confirmPasswordInput].forEach(input => {
+      input.addEventListener('input', () => {
+        input.classList.remove('error');
+        clearMessage();
+      });
+    });
+
+    // Prevent paste in OTP field for security
+    otpInput.addEventListener('paste', function (e) {
+      e.preventDefault();
+      const paste = (e.clipboardData || window.clipboardData).getData('text');
+      const digits = paste.replace(/\D/g, '').slice(0, 6);
+      this.value = digits;
+      this.dispatchEvent(new Event('input'));
+    });
+  </script>
+</body>
+
+</html>

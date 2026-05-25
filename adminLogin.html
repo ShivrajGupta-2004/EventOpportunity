@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Login - Event Opportunity</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <!-- Font Awesome -->
+  <script src="https://kit.fontawesome.com/d71c1e8eee.js" crossorigin="anonymous"></script>
+
+  <style>
+    body {
+      margin: 0;
+      background-color: #f4efef;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    .outer-container {
+      max-width: 800px;
+      margin: 60px auto;
+      background-color: #fff;
+      border-radius: 16px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+      padding: 40px 20px;
+    }
+
+    .header {
+      display: flex;
+      align-items: center;
+      padding: 16px 20px;
+      border-bottom: 1px solid #eee;
+    }
+
+    .event-logo {
+      max-height: 50px;
+      height: auto;
+      width: auto;
+    }
+
+    .inner-container {
+      max-width: 400px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .inner-container h2 {
+      margin-bottom: 6px;
+      color: #333;
+      font-weight: 600;
+    }
+
+    .subtitle {
+      font-size: 14px;
+      color: #777;
+      margin-bottom: 25px;
+    }
+
+    .input-group {
+      margin-bottom: 20px;
+      text-align: left;
+      position: relative;
+    }
+
+    .input-group label {
+      display: block;
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 6px;
+      color: #222;
+    }
+
+    .input-group input {
+      width: 100%;
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+      transition: border-color 0.3s;
+      box-sizing: border-box;
+    }
+
+    .input-group input:focus {
+      border-color: #f44336;
+      outline: none;
+    }
+
+    .toggle-password {
+      position: absolute;
+      right: 12px;
+      top: 42px;
+      cursor: pointer;
+      color: #888;
+    }
+
+    .submit-btn {
+      background-color: #f44336;
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background 0.3s;
+      display: block;
+      margin: 20px auto 0;
+    }
+
+    .submit-btn:hover {
+      background-color: #d32f2f;
+    }
+
+    .note {
+      margin-top: 16px;
+      font-size: 13px;
+      color: #666;
+    }
+
+    .note a {
+      color: #f44336;
+      text-decoration: none;
+    }
+
+    .note a:hover {
+      text-decoration: underline;
+    }
+
+    .forgot-password {
+      margin-top: 10px;
+      font-size: 13px;
+      color: #666;
+      text-align: center;
+    }
+
+    .forgot-password a {
+      color: #f44336;
+      text-decoration: none;
+    }
+
+    .forgot-password a:hover {
+      text-decoration: underline;
+    }
+
+    @media (max-width: 600px) {
+      .outer-container {
+        margin: 30px 10px;
+        padding: 30px 15px;
+      }
+
+      .inner-container {
+        max-width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="outer-container">
+    <div class="header">
+      <img src="images/eventLogo.png" alt="Event Logo" class="event-logo">
+    </div>
+    <div class="inner-container">
+      <h2>Admin Login</h2>
+      <p class="subtitle">Login to manage EventOpportunity</p>
+      <form id="loginForm">
+        <div class="input-group">
+          <label for="username">Username or Email</label>
+          <input type="text" id="username" name="username" placeholder="Enter your username or email" required />
+        </div>
+
+        <div class="input-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password" placeholder="Enter your password" required />
+          <i class="fa-solid fa-eye toggle-password" onclick="togglePwd(this)"></i>
+        </div>
+
+        <button type="submit" class="submit-btn">Login</button>
+      </form>
+
+      <div class="note">
+        Don't have an account? <a href="adminRegister.html">Register here</a>
+      </div>
+
+      <!-- 
+      <div class="forgot-password">
+        <a href="forgetAdmin.html">Forgot Password?</a>
+      </div>
+      -->
+    </div>
+  </div>
+
+  <script>
+    // ===============================
+    // Admin Login Script
+    // ===============================
+
+    // Password Toggle
+    function togglePwd(icon) {
+      const passwordInput = document.getElementById("password");
+      const type =
+        passwordInput.getAttribute("type") === "password" ? "text" : "password";
+      passwordInput.setAttribute("type", type);
+      icon.classList.toggle("fa-eye");
+      icon.classList.toggle("fa-eye-slash");
+    }
+
+    // Admin Login Functionality
+    document
+      .getElementById("loginForm")
+      .addEventListener("submit", async function (e) {
+        e.preventDefault();
+
+        const username = document.getElementById("username").value.trim();
+        const password = document.getElementById("password").value.trim();
+
+        if (username === "" || password === "") {
+          alert("Please fill in all fields.");
+          return;
+        }
+
+        const loginBtn = document.querySelector('button[type="submit"]');
+        const originalText = loginBtn.textContent;
+
+        try {
+          // Loading state
+          loginBtn.innerHTML =
+            '<i class="fas fa-spinner fa-spin"></i> Logging in...';
+          loginBtn.disabled = true;
+
+          console.log("Attempting admin login for:", username);
+
+          // API Call → backend/routes/authRoutes.js → adminLogin
+          const response = await fetch("http://localhost:5000/api/admin-login", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            credentials: "include", // important for session cookies
+            body: JSON.stringify({ username, password }),
+          });
+
+          const data = await response.json();
+          console.log("Server response:", data);
+
+          if (response.ok && data.admin) {
+            alert("Admin login successful!\nWelcome, " + data.admin.fullName);
+            console.log("Admin logged in:", data.admin);
+
+            // Session test after login
+            const sessionCheck = await fetch(
+              "http://localhost:5000/api/check-session",
+              { credentials: "include" }
+            );
+            const sessionData = await sessionCheck.json();
+            console.log("Session after login:", sessionData);
+
+            // Backup in sessionStorage
+            sessionStorage.setItem(
+              "adminData",
+              JSON.stringify({
+                id: data.admin.id,
+                username: data.admin.username,
+                email: data.admin.email,
+                fullName: data.admin.fullName,
+                loginTime: new Date().toISOString(),
+              })
+            );
+
+            // Delay before redirect
+            setTimeout(() => {
+              window.location.href = "adminPage.html";
+            }, 2000);
+          } else {
+            const errorMsg =
+              data.message || "Login failed. Please check your credentials.";
+            alert(errorMsg);
+            console.error("Login failed:", errorMsg);
+          }
+        } catch (error) {
+          console.error("Network/Connection error:", error);
+          alert(
+            "Connection error!\n\nMake sure:\n1. Server is running on http://localhost:5000\n2. Run 'node server.js'"
+          );
+        } finally {
+          loginBtn.textContent = originalText;
+          loginBtn.disabled = false;
+        }
+      });
+
+    // Check if already logged in
+    window.addEventListener("load", async function () {
+      console.log("Checking existing admin session...");
+      try {
+        const response = await fetch("http://localhost:5000/api/check-session", {
+          method: "GET",
+          credentials: "include",
+        });
+
+        const data = await response.json();
+        console.log("Session check result:", data);
+
+        if (data.loggedIn && data.userType === "admin") {
+          alert("You are already logged in as admin!");
+          window.location.href = "adminPage.html";
+        } else if (data.loggedIn && data.userType === "user") {
+          alert(
+            "You are currently logged in as a user. Please logout first to access admin panel."
+          );
+        }
+      } catch (error) {
+        console.error("Session check error:", error);
+      }
+    });
+
+    // Debug helper
+    async function testSession() {
+      try {
+        const response = await fetch("http://localhost:5000/api/check-session", {
+          credentials: "include",
+        });
+        const data = await response.json();
+        console.log("Session test result:", data);
+        return data;
+      } catch (error) {
+        console.error("Session test failed:", error);
+        return null;
+      }
+    }
+    window.testSession = testSession;
+  </script>
+</body>
+
+</html>

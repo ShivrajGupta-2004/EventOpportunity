@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Evently - Admin Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="admin.css">
+    <style>
+        /* Payment iframe container */
+        .payment-iframe-container {
+            width: 100%;
+            height: calc(100vh - 100px);
+            border-radius: 8px;
+            overflow: hidden;
+            background: #1a0f1f;
+        }
+
+        .payment-iframe-container iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="admin-container">
+        <!-- Left Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="admin-profile">
+                    <span class="admin-name" id="sidebarAdminName">Loading...</span>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <ul>
+                    <li class="nav-item" data-section="dashboard">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Dashboard</span>
+                    </li>
+                    <li class="nav-item active" data-section="posted-events">
+                        <i class="fas fa-plus"></i>
+                        <span>Post Events</span>
+                    </li>
+                    <li class="nav-item" data-section="applicants-applied">
+                        <i class="fas fa-users"></i>
+                        <span>Applicants Applied</span>
+                    </li>
+                    <li class="nav-item" data-section="applicants-selected">
+                        <i class="fas fa-user-check"></i>
+                        <span>Applicants Selected</span>
+                    </li>
+                    <li class="nav-item" data-section="attended-applicants">
+                        <i class="fas fa-user-graduate"></i>
+                        <span>Attended Applicants</span>
+                    </li>
+                    <li class="nav-item" data-section="payment-details">
+                        <i class="fas fa-credit-card"></i>
+                        <span>Payment & Details</span>
+                    </li>
+                    <li class="nav-item" data-section="your-details">
+                        <i class="fas fa-user-circle"></i>
+                        <span>Your Details</span>
+                    </li>
+                </ul>
+            </nav>
+
+            <div class="sidebar-footer">
+                <button class="logout-btn" id="logoutBtn">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Dashboard Section -->
+<section id="dashboard" class="content-section">
+    <div class="section-header">
+        <h1>Dashboard Overview</h1>
+    </div>
+
+    <!-- Metrics Cards - 3x2 Grid -->
+    <div class="dashboard-stats-grid">
+        <!-- Row 1 -->
+        <div class="stat-card">
+            <div class="stat-icon"><i class="fas fa-users"></i></div>
+            <div class="stat-number" id="totalUsers">0</div>
+            <div class="stat-label">Total Users Registered</div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-icon"><i class="fas fa-calendar-alt"></i></div>
+            <div class="stat-number" id="totalEvents">0</div>
+            <div class="stat-label">Total Events Posted</div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-icon"><i class="fas fa-money-bill-wave"></i></div>
+            <div class="stat-number" id="totalPayments">₹0</div>
+            <div class="stat-label">Total Payments Made</div>
+        </div>
+
+        <!-- Row 2 -->
+        <div class="stat-card">
+            <div class="stat-icon"><i class="fas fa-file-alt"></i></div>
+            <div class="stat-number" id="totalApplications">0</div>
+            <div class="stat-label">Total Applications</div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-icon"><i class="fas fa-clock"></i></div>
+            <div class="stat-number" id="pendingApplications">0</div>
+            <div class="stat-label">Pending Applications</div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
+            <div class="stat-number" id="completedPayments">0</div>
+            <div class="stat-label">Completed Payments</div>
+        </div>
+    </div>
+
+    <!-- Row 3: Events & Applications Charts (2 columns) -->
+    <div class="charts-row-2col">
+        <div class="chart-container">
+            <div class="chart-header">
+                <h3 class="chart-title">Monthly Events</h3>
+            </div>
+            <canvas id="monthlyEventsChart"></canvas>
+        </div>
+
+        <div class="chart-container">
+            <div class="chart-header">
+                <h3 class="chart-title">Applications by Month</h3>
+            </div>
+            <canvas id="monthlyApplicationsChart"></canvas>
+        </div>
+    </div>
+
+    <!-- Row 4: Payments Chart (Full Width) -->
+    <div class="chart-full-width">
+        <div class="chart-container">
+            <div class="chart-header">
+                <h3 class="chart-title">Monthly Payments</h3>
+            </div>
+            <canvas id="monthlyPaymentsChart"></canvas>
+        </div>
+    </div>
+</section>
+
+            <!-- Posted Events Section -->
+            <section id="posted-events" class="content-section active">
+                <div class="section-header">
+                    <h1>Posted Events</h1>
+                    <button class="btn btn-primary" id="postEventBtn">
+                        <i class="fas fa-plus"></i>
+                        Post Event
+                    </button>
+                </div>
+
+                <!-- 🔥 YEH ADD KARO - Line 89 pe -->
+                <div class="search-container" style="margin-bottom: 20px;">
+                    <i class="fas fa-search"></i>
+                    <input type="text" class="search-input" id="eventsSearchInput"
+                        placeholder="Search by Event Name or Event ID...">
+                </div>
+
+                <div class="events-table-container">
+                    <table class="events-table">
+                        <thead>
+                            <tr>
+                                <th>Event Name</th>
+                                <th>Event ID</th>
+                                <th>Date</th>
+                                <th>Location</th>
+                                <th>Description</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="eventsTableBody">
+                            <!-- Events will be populated here -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Applicants Applied Section -->
+            <section id="applicants-applied" class="content-section">
+                <div class="section-header">
+                    <h1>Applicants Applied</h1>
+                    <div class="search-container">
+                        <i class="fas fa-search"></i>
+                        <input type="text" placeholder="Search applicants" class="search-input">
+                    </div>
+                </div>
+
+                <div class="applicants-table-container">
+                    <table class="applicants-table">
+                        <thead>
+                            <tr>
+                                <th>S.No.</th>
+                                <th>Applicant Name</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>Event Name</th>
+                                <th>Application Date</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="applicantsAppliedTableBody">
+                            <!-- Applicants will be populated here -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Applicants Selected Section -->
+            <section id="applicants-selected" class="content-section">
+                <div class="section-header">
+                    <h1>Applicants Selected</h1>
+                    <div class="search-container">
+                        <i class="fas fa-search"></i>
+                        <input type="text" placeholder="Search applicants" class="search-input">
+                    </div>
+                </div>
+
+                <div class="applicants-table-container">
+                    <table class="applicants-table">
+                        <thead>
+                            <tr>
+                                <th>S.No.</th>
+                                <th>Applicant Name</th>
+                                <th>Email</th>
+                                <th>Event Name</th>
+                                <th>Selection Date</th>
+                                <th>Notes</th>
+                                <th>Mark Attendance</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="applicantsSelectedTableBody">
+                            <!-- Selected applicants will be populated here -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Your Details Section -->
+            <section id="your-details" class="content-section">
+                <div class="section-header">
+                    <h1>Your Details</h1>
+                    <button class="btn btn-primary" id="editProfileBtn">
+                        <i class="fas fa-edit"></i>
+                        Edit Profile
+                    </button>
+                </div>
+
+                <div class="profile-details-container">
+                    <div class="profile-card">
+                        <div class="profile-image-section">
+                            <div class="profile-name-section">
+                                <h2 id="profileFullName">Loading...</h2>
+                                <p id="profileUsername">@loading</p>
+                            </div>
+                        </div>
+
+                        <div class="profile-info-grid">
+                            <div class="info-row">
+                                <div class="info-item">
+                                    <label>Full Name</label>
+                                    <span id="displayFullName">Loading...</span>
+                                </div>
+                                <div class="info-item">
+                                    <label>Username</label>
+                                    <span id="displayUsername">Loading...</span>
+                                </div>
+                            </div>
+
+                            <div class="info-row">
+                                <div class="info-item">
+                                    <label>Email</label>
+                                    <span id="displayEmail">Loading...</span>
+                                </div>
+                                <div class="info-item">
+                                    <label>Mobile</label>
+                                    <span id="displayMobile">Loading...</span>
+                                </div>
+                            </div>
+
+                            <div class="info-row">
+                                <div class="info-item">
+                                    <label>Gender</label>
+                                    <span id="displayGender">Loading...</span>
+                                </div>
+                                <div class="info-item">
+                                    <label>Date of Birth</label>
+                                    <span id="displayDateOfBirth">Loading...</span>
+                                </div>
+                            </div>
+
+                            <div class="info-row">
+                                <div class="info-item">
+                                    <label>Registration Date</label>
+                                    <span id="displayRegistrationDate">Loading...</span>
+                                </div>
+                                <div class="info-item">
+                                    <label>Account Status</label>
+                                    <span class="status-badge status-approved">Active</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Attended Applicants Section -->
+            <section id="attended-applicants" class="content-section">
+                <div class="section-header">
+                    <h1>Attended Applicants</h1>
+                    <div class="search-container">
+                        <i class="fas fa-search"></i>
+                        <input type="text" placeholder="Search attended applicants" class="search-input">
+                    </div>
+                </div>
+
+                <div class="applicants-table-container">
+                    <table class="applicants-table">
+                        <thead>
+                            <tr>
+                                <th>S.No.</th>
+                                <th>Applicant Name</th>
+                                <th>Email</th>
+                                <th>Event Name</th>
+                                <th>Attendance Date</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                                <th>Payment Status</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="attendedApplicantsTableBody">
+                            <!-- Attended applicants will be populated here -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Payment & Details Section -->
+            <!-- Payment & Details Section -->
+            <section id="payment-details" class="content-section">
+                <div class="header">
+                    <h1 class="page-title">Payments & Details</h1>
+                </div>
+
+                <div class="tabs">
+                    <div class="tab active" onclick="switchPaymentTab('make-payment')">Make Payment</div>
+                    <div class="tab" onclick="switchPaymentTab('payment-history')">Payment History</div>
+                </div>
+
+                <!-- Make Payment Section -->
+                <div id="make-payment-section">
+                    <!-- Payment Header -->
+                    <div class="payment-header">
+                        <h2 class="payment-title">Make Payment</h2>
+                        <p class="payment-subtitle">Fill in the details below to process a new payment.</p>
+                    </div>
+
+                    <!-- Success/Error Messages -->
+                    <div id="successMessage" class="message success">
+                        Payment submitted successfully!
+                    </div>
+                    <div id="errorMessage" class="message error">
+                        Please fill in all required fields.
+                    </div>
+
+                    <!-- Payment Form -->
+                    <div class="form-container">
+                        <form class="payment-form" onsubmit="submitPayment(event)">
+                            <div class="form-group">
+                                <label class="form-label">Event ID *</label>
+                                <input type="text" class="form-input" id="eventId" placeholder="Enter Event ID"
+                                    required>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Username *</label>
+                                <select class="form-select" id="username" required>
+                                    <option value="">First select Event ID</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">User Email *</label>
+                                <input type="email" class="form-input" id="userEmail" placeholder="Enter User Email"
+                                    required readonly>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">User Phone Number *</label>
+                                <input type="tel" class="form-input" id="userPhone"
+                                    placeholder="Enter User Phone Number" required readonly>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Transaction ID *</label>
+                                <input type="text" class="form-input" id="transactionId" placeholder="Auto-generated"
+                                    required readonly>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Payment Mode *</label>
+                                <select class="form-select" id="paymentMode" required>
+                                    <option value="">Select Payment Mode</option>
+                                    <option value="credit-card">Credit Card</option>
+                                    <option value="debit-card">Debit Card</option>
+                                    <option value="net-banking">Net Banking</option>
+                                    <option value="upi">UPI</option>
+                                    <option value="wallet">Digital Wallet</option>
+                                    <option value="bank-transfer">Bank Transfer</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group full-width">
+                                <label class="form-label">Payment Amount *</label>
+                                <input type="number" class="form-input" id="paymentAmount"
+                                    placeholder="Auto-filled from event" step="0.01" min="0" required readonly>
+                            </div>
+
+                            <button type="submit" class="submit-btn">Submit Payment</button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Payment History Section -->
+                <div id="payment-history-section" class="history-container">
+                    <div class="search-container">
+                        <input type="text" class="search-input" placeholder="Search payment history..."
+                            onkeyup="searchPayments(this.value)">
+                    </div>
+
+                    <div class="payment-table" id="paymentTableContainer">
+                        <div class="table-header">
+                            <div>S.NO.</div>
+                            <div>TRANSACTION ID</div>
+                            <div>EVENT ID</div>
+                            <div>USER NAME</div>
+                            <div>USER EMAIL</div>
+                            <div>EVENT NAME</div>
+                            <div>AMOUNT</div>
+                            <div>DATE</div>
+                            <div>PAYMENT MODE</div>
+                            <div>STATUS</div>
+                        </div>
+
+                        <div id="paymentTableBody">
+                            <div class="table-row loading-row">
+                                <div class="table-cell" style="grid-column: 1 / -1; text-align: center; padding: 2rem;">
+                                    <i class="fas fa-spinner fa-spin"
+                                        style="font-size: 1.5rem; margin-bottom: 1rem; display: block;"></i>
+                                    <p>Loading payment history...</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Post/Edit Event Modal -->
+    <!-- Post/Edit Event Modal -->
+    <div id="eventModal" class="modal">
+        <div class="modal-content event-modal-modern">
+            <div class="modal-header">
+                <div>
+                    <h2 id="modalTitle">Post New Event</h2>
+                    <p class="modal-subtitle">Fill in the details to create an amazing event</p>
+                </div>
+                <button class="close-btn">&times;</button>
+            </div>
+
+            <form id="eventForm" class="event-form-modern">
+                <!-- Row 1: Event ID, Name, Date -->
+                <div class="form-row-3">
+                    <div class="form-group">
+                        <label for="eventId">
+                            <i class="fas fa-fingerprint"></i> Event ID *
+                            <span class="auto-badge">AUTO</span>
+                        </label>
+                        <input type="text" id="eventId" name="eventId" readonly required
+                            placeholder="Auto-generated ID">
+                    </div>
+                    <div class="form-group">
+                        <label for="eventName">
+                            <i class="fas fa-calendar-star"></i> Event Name *
+                        </label>
+                        <input type="text" id="eventName" name="eventName" required placeholder="Enter event name">
+                    </div>
+                    <div class="form-group">
+                        <label for="eventDate">
+                            <i class="fas fa-calendar-day"></i> Event Date *
+                        </label>
+                        <input type="date" id="eventDate" name="eventDate" required>
+                    </div>
+                </div>
+
+                <!-- Row 2: Location, Type, Payment -->
+                <div class="form-row-3">
+                    <div class="form-group">
+                        <label for="eventLocation">
+                            <i class="fas fa-map-marker-alt"></i> Location *
+                        </label>
+                        <input type="text" id="eventLocation" name="eventLocation" required
+                            placeholder="e.g. Mumbai, India">
+                    </div>
+                    <div class="form-group">
+                        <label for="eventType">
+                            <i class="fas fa-tags"></i> Event Type *
+                        </label>
+                        <select id="eventType" name="eventType" required>
+                            <option value="">Select Event Type</option>
+                            <option value="corporate">🏢 Corporate</option>
+                            <option value="real-estate">🏠 Real Estate</option>
+                            <option value="social">🎉 Social</option>
+                            <option value="sport">⚽ Sport</option>
+                            <option value="educational">📚 Educational</option>
+                            <option value="entertainment">🎭 Entertainment</option>
+                            <option value="community">🤝 Community</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="eventPayment">
+                            <i class="fas fa-rupee-sign"></i> Payment (₹) *
+                        </label>
+                        <input type="number" id="eventPayment" name="eventPayment" required placeholder="0" min="0">
+                    </div>
+                </div>
+
+                <!-- Row 3: Timing, Dress Code, Participants -->
+                <div class="form-row-3">
+                    <div class="form-group">
+                        <label for="eventTiming">
+                            <i class="fas fa-clock"></i> Timing *
+                        </label>
+                        <input type="text" id="eventTiming" name="eventTiming" required placeholder="e.g. 9 AM - 6 PM">
+                    </div>
+                    <div class="form-group">
+                        <label for="dressCode">
+                            <i class="fas fa-user-tie"></i> Dress Code *
+                        </label>
+                        <input type="text" id="dressCode" name="dressCode" required placeholder="e.g. Formal">
+                    </div>
+                    <div class="form-group">
+                        <label for="participants">
+                            <i class="fas fa-users"></i> Participants *
+                        </label>
+                        <input type="text" id="participants" name="participants" required placeholder="e.g. 30M & 30F">
+                    </div>
+                </div>
+
+                <!-- Row 4: Description (Full Width) -->
+                <div class="form-group full-width">
+                    <label for="eventDescription">
+                        <i class="fas fa-align-left"></i> Description
+                    </label>
+                    <textarea id="eventDescription" name="eventDescription" rows="3"
+                        placeholder="Describe your event in detail..."></textarea>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" id="cancelBtn">
+                        <i class="fas fa-times"></i> Cancel
+                    </button>
+                    <button type="submit" class="btn btn-primary" id="saveBtn">
+                        <i class="fas fa-save"></i> Save Event
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <!-- Edit Profile Modal -->
+    <div id="editProfileModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Edit Your Profile</h2>
+                <button class="close-btn" id="closeEditProfileBtn">&times;</button>
+            </div>
+
+            <form id="editProfileForm" class="event-form">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="editFullName">Full Name *</label>
+                        <input type="text" id="editFullName" name="fullName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editUsername">Username *</label>
+                        <input type="text" id="editUsername" name="username" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="editEmail">Email *</label>
+                        <input type="email" id="editEmail" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editMobile">Mobile *</label>
+                        <input type="tel" id="editMobile" name="mobile" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="editGender">Gender *</label>
+                        <select id="editGender" name="gender" required>
+                            <option value="">Select Gender</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="editDateOfBirth">Date of Birth *</label>
+                        <input type="date" id="editDateOfBirth" name="dateOfBirth" required>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" id="cancelEditBtn">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="saveProfileBtn">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="adminAuth.js"></script>
+    <script src="adminEvents.js"></script>
+    <script src="adminUI.js"></script>
+    <script src="adminPage.js"></script>
+    <script src="adminPay.js"></script>
+    <script>
+        // Global payment tab switching function
+        function switchPaymentTab(tabName) {
+            if (typeof paymentManager !== 'undefined') {
+                paymentManager.switchTab(tabName);
+            }
+        }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="adminDashboard.js"></script>
+</body>
+
+
+</html>

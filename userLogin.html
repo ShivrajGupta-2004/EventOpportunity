@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>User Login - Event Opportunity</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <script src="https://kit.fontawesome.com/d71c1e8eee.js" crossorigin="anonymous"></script>
+
+  <style>
+    body {
+      margin: 0;
+      background-color: #f4efef;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    .outer-container {
+      max-width: 800px;
+      margin: 60px auto;
+      background-color: #fff;
+      border-radius: 16px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+      padding: 40px 20px;
+    }
+
+    .header {
+      display: flex;
+      align-items: center;
+      padding: 16px 20px;
+      border-bottom: 1px solid #eee;
+    }
+
+    .event-logo {
+      max-height: 50px;
+      height: auto;
+      width: auto;
+    }
+
+    .inner-container {
+      max-width: 400px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .inner-container h2 {
+      margin-bottom: 6px;
+      color: #333;
+      font-weight: 600;
+    }
+
+    .subtitle {
+      font-size: 14px;
+      color: #777;
+      margin-bottom: 25px;
+    }
+
+    .input-group {
+      margin-bottom: 20px;
+      text-align: left;
+      position: relative;
+    }
+
+    .input-group label {
+      display: block;
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 6px;
+      color: #222;
+    }
+
+    .input-group input {
+      width: 100%;
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+      transition: border-color 0.3s;
+      box-sizing: border-box;
+    }
+
+    .input-group input:focus {
+      border-color: #f44336;
+      outline: none;
+    }
+
+    .input-group input.error {
+      border-color: #f44336;
+      background-color: #fef2f2;
+    }
+
+    .toggle-password {
+      position: absolute;
+      right: 12px;
+      top: 42px;
+      cursor: pointer;
+      color: #888;
+    }
+
+    .submit-btn {
+      background-color: #f44336;
+      color: #fff;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background 0.3s;
+      display: block;
+      margin: 20px auto 0;
+      width: 100%;
+      max-width: 200px;
+    }
+
+    .submit-btn:hover {
+      background-color: #d32f2f;
+    }
+
+    .message {
+      margin: 15px 0;
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 14px;
+      text-align: center;
+    }
+
+    .message.success {
+      background-color: #f0f9ff;
+      color: #0369a1;
+      border: 1px solid #bae6fd;
+    }
+
+    .message.error {
+      background-color: #fef2f2;
+      color: #dc2626;
+      border: 1px solid #fecaca;
+    }
+
+    .note {
+      margin-top: 16px;
+      font-size: 13px;
+      color: #666;
+    }
+
+    .note a {
+      color: #f44336;
+      text-decoration: none;
+    }
+
+    .note a:hover {
+      text-decoration: underline;
+    }
+
+    .forgot-password {
+      margin-top: 10px;
+      font-size: 13px;
+      color: #666;
+      text-align: center;
+    }
+
+    .forgot-password a {
+      color: #f44336;
+      text-decoration: none;
+    }
+
+    .forgot-password a:hover {
+      text-decoration: underline;
+    }
+
+    @media (max-width: 600px) {
+      .outer-container {
+        margin: 30px 10px;
+        padding: 30px 15px;
+      }
+
+      .inner-container {
+        max-width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="outer-container">
+    <div class="header">
+      <img src="images/eventLogo.png" alt="Event Logo" class="event-logo">
+    </div>
+    <div class="inner-container">
+      <h2>User Login</h2>
+      <p class="subtitle">Login to your EventOpportunity account</p>
+
+      <div id="messageContainer"></div>
+
+      <form id="loginForm">
+        <div class="input-group">
+          <label for="username">Username or Email</label>
+          <input type="text" id="username" name="username" placeholder="Enter your username or email" required />
+        </div>
+
+        <div class="input-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password" placeholder="Enter your password" required />
+          <i class="fa-solid fa-eye toggle-password" onclick="togglePwd(this)"></i>
+        </div>
+
+        <button type="submit" class="submit-btn">Login</button>
+      </form>
+
+      <div class="note">
+        Don't have an account? <a href="userRegister.html">Register here</a>
+      </div>
+
+      <div class="forgot-password">
+        <a href="userforget.html">Forgot Password?</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const loginForm = document.getElementById('loginForm');
+    const msgBox = document.getElementById('messageContainer');
+    const userInput = document.getElementById('username');
+    const passInput = document.getElementById('password');
+    const submitBtn = document.querySelector('.submit-btn');
+
+    // Toggle password visibility
+    function togglePwd(icon) {
+      const type = passInput.type === 'password' ? 'text' : 'password';
+      passInput.type = type;
+      icon.classList.toggle('fa-eye');
+      icon.classList.toggle('fa-eye-slash');
+    }
+
+    // Show message function
+    function showMsg(txt, type = 'error') {
+      msgBox.innerHTML = `<div class="message ${type}">${txt}</div>`;
+    }
+
+    // Clear message function
+    function clearMsg() {
+      msgBox.innerHTML = '';
+    }
+
+    // Set loading state
+    function setLoading(loading) {
+      submitBtn.disabled = loading;
+      submitBtn.style.opacity = loading ? '0.6' : '1';
+      submitBtn.style.cursor = loading ? 'not-allowed' : 'pointer';
+      submitBtn.textContent = loading ? 'Logging in...' : 'Login';
+    }
+
+    // ✅ MAIN LOGIN FORM SUBMISSION - FIXED WITH CREDENTIALS
+    loginForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      clearMsg();
+
+      const username = userInput.value.trim();
+      const password = passInput.value.trim();
+
+      // Basic validation
+      if (!username || !password) {
+        showMsg('Please fill out all fields');
+        return;
+      }
+
+      if (username.length < 3) {
+        showMsg('Username must be at least 3 characters');
+        return;
+      }
+
+      if (password.length < 6) {
+        showMsg('Password must be at least 6 characters');
+        return;
+      }
+
+      setLoading(true);
+
+      try {
+        console.log('🔄 Attempting login for:', username);
+
+        // ✅ FIXED FETCH WITH CREDENTIALS INCLUDE
+        const response = await fetch('http://localhost:5000/api/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          credentials: 'include', // ✅ YE MISSING THA - SESSION COOKIES KE LIYE
+          body: JSON.stringify({ username, password })
+        });
+
+        console.log('📨 Response status:', response.status);
+        console.log('📨 Response headers:', response.headers);
+
+        const data = await response.json();
+        console.log('📨 Login response:', data);
+
+        if (response.ok) {
+          // ✅ LOGIN SUCCESS
+          showMsg(`Welcome ${data.user.fullName || data.user.username}! Redirecting...`, 'success');
+
+          // ✅ SESSION STATUS CHECK (DEBUGGING)
+          setTimeout(async () => {
+            try {
+              // ✅ ENDPOINT FIXED - /api/session-status se /api/check-session
+              const sessionCheck = await fetch('http://localhost:5000/api/check-session', {
+                credentials: 'include'
+              });
+              const sessionData = await sessionCheck.json();
+              console.log('✅ Session after login:', sessionData);
+            } catch (err) {
+              console.log('Session check failed:', err);
+            }
+          }, 500);
+
+          // Clear form
+          userInput.value = '';
+          passInput.value = '';
+
+          // Redirect after delay
+          setTimeout(() => {
+            window.location.href = 'homePage.html'; // ✅ REDIRECT TO HomePAGE
+          }, 1500);
+
+        } else {
+          // Login failed
+          showMsg(data.message || 'Login failed. Please try again.');
+          uuuu
+          userInput.classList.add('error');
+          passInput.classList.add('error');
+
+          setTimeout(() => {
+            userInput.classList.remove('error');
+            passInput.classList.remove('error');
+          }, 3000);
+        }
+
+      } catch (error) {
+        console.error('❌ Login error:', error);
+
+        if (error.message.includes('Failed to fetch')) {
+          showMsg('Cannot connect to server. Please check if server is running on port 5000.');
+        } else {
+          showMsg('Connection failed: ' + error.message);
+        }
+      } finally {
+        setLoading(false);
+      }
+    });
+
+    // Clear error messages when user starts typing
+    userInput.addEventListener('input', () => {
+      clearMsg();
+      userInput.classList.remove('error');
+    });
+
+    passInput.addEventListener('input', () => {
+      clearMsg();
+      passInput.classList.remove('error');
+    });
+
+    // Focus on username field when page loads
+    window.addEventListener('load', () => {
+      userInput.focus();
+    });
+
+    // Handle Enter key press
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !submitBtn.disabled) {
+        loginForm.dispatchEvent(new Event('submit'));
+      }
+    });
+
+    // ✅ CHECK IF ALREADY LOGGED IN - WITH CREDENTIALS
+    window.addEventListener('load', async () => {
+      try {
+        // ✅ ENDPOINT FIXED - /api/check-session with full URL
+        const response = await fetch('http://localhost:5000/api/check-session', {
+          credentials: 'include' // ✅ YE BHI ADD KIYA
+        });
+        const data = await response.json();
+
+        if (data.loggedIn) {
+          showMsg('You are already logged in. Redirecting...', 'success');
+          setTimeout(() => {
+            window.location.href = 'homePage.html'; // ✅ REDIRECT TO HomePage
+          }, 1000);
+        }
+      } catch (error) {
+        console.log('Session check failed - user not logged in');
+      }
+    });
+    // ✅ GLOBAL FETCH CONFIG FOR ALL REQUESTS (OPTIONAL)
+    const originalFetch = window.fetch;
+    window.fetch = function (...args) {
+      // If no options provided, create empty object
+      if (args[1] === undefined) args[1] = {};
+
+      // Add credentials to all API requests
+      if (args[0].includes('/api/')) {
+        args[1].credentials = 'include';
+      }
+
+      return originalFetch.apply(this, args);
+    };
+  </script>
+</body>
+
+</html>
