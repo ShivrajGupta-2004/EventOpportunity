@@ -5,6 +5,27 @@
 Users can register, view detailed event information, manage their profiles, and participate in events through a simple and responsive interface. The platform also includes an admin management system where administrators can add, update, and manage event listings efficiently.
 
 ---
+## 🚀 Live Demo
+
+🔗 **[EventOpportunity – Live App](https://eventopportunity-private.onrender.com)**
+
+> ⚠️ Hosted on Render free tier — may take **30–60 seconds** to load on first visit.
+
+### 🧑‍💻 User Portal
+| Field    | Value                                                                 |
+|----------|-----------------------------------------------------------------------|
+| URL      | [User Login](https://eventopportunity-private.onrender.com/userLogin.html) |
+| Username | `shievagupta`                                                         |
+| Password | `shiva@123`                                                           |
+
+### 🛡️ Admin Panel
+| Field    | Value                                                                 |
+|----------|-----------------------------------------------------------------------|
+| URL      | [Admin Login](https://eventopportunity-private.onrender.com/adminLogin.html) |
+| Username | `admin`                                                               |
+| Password | `admin@123`                                                           |
+
+> ℹ️ These are read-only demo credentials for portfolio review purposes.
 
 ## 📸 Screenshots
 
