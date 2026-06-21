@@ -12,18 +12,18 @@ Users can register, view detailed event information, manage their profiles, and 
 > ⚠️ Hosted on Render free tier — may take **30–60 seconds** to load on first visit.
 
 ### 🧑‍💻 User Portal
-| Field    | Value                                                                 |
-|----------|-----------------------------------------------------------------------|
-| URL      | [User Login](https://eventopportunity-private.onrender.com/userLogin.html) |
-| Username | `shievagupta`                                                         |
-| Password | `shiva@123`                                                           |
+| Field               | Value                                                                      |
+|---------------------|----------------------------------------------------------------------------|
+| URL                 | [User Login](https://eventopportunity-private.onrender.com/userLogin.html) |
+| Username & Password | `Demo credentials available on request — contact: sivrjgupta2529@gmail.com`|
+
 
 ### 🛡️ Admin Panel
-| Field    | Value                                                                 |
-|----------|-----------------------------------------------------------------------|
-| URL      | [Admin Login](https://eventopportunity-private.onrender.com/adminLogin.html) |
-| Username | `admin`                                                               |
-| Password | `admin@123`                                                           |
+| Field               | Value                                                                        |
+|---------------------|------------------------------------------------------------------------------|
+| URL                 | [Admin Login](https://eventopportunity-private.onrender.com/adminLogin.html) |
+| Username & Password | `Demo credentials available on request — contact: sivrjgupta2529@gmail.com`  |
+
 
 > ℹ️ These are read-only demo credentials for portfolio review purposes.
 
